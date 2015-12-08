@@ -1,4 +1,4 @@
-#define NUM_ITERATIONS 1000*1000*30
+#define NUM_ITERATIONS 1000*1000*100
 
 void foo() {}
 
