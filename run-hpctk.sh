@@ -23,7 +23,8 @@ for freq in $FREQS; do
 	for i in {1..10}; do
 
 		rm -rf $OUT
-		RUNTIME=`taskset -c 5 hpcrun -e $CLOCK -o $OUT $TARGET ${@:2}`
+		RUNTIME=`taskset -c 5 hpcrun -e $CLOCK -o $OUT $TARGET ${@:2} > /dev/null 2> /tmp/Runtime`
+		RUNTIME=$(</tmp/Runtime)
 		profile=`find $OUT/ -name "*.log"`
 	
 		SAMPLE=`grep -r SUMMARY $profile | awk '{print $3}'`
