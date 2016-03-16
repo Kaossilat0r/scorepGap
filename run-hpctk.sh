@@ -8,22 +8,23 @@ fi
 TARGET=$1
 OUT=tmp-measurement
 LOG=hpctk-$TARGET.log
+ITERATIONS=10
 
 echo "$TARGET ${@:2}" > $LOG
 echo "$TARGET" > $LOG.samples
 
-FREQS="2500000 1250000 250000 125000 500000 250000 12500 10000 5000 2500"
-for freq in $FREQS; do
+FREQS="2,500,000 1,250,000 250,000 125,000 50,000 25,000 12,500 10,000 5,000 2,500"
+for freq in ${FREQS//,}; do
 
 	CLOCK=PAPI_TOT_CYC@$freq
 	echo -e "$CLOCK \c"
 	RUNTIMES=""
 	SAMPLES=""
 
-	for i in {1..10}; do
+	for i in {1..$ITERATIONS}; do
 
 		rm -rf $OUT
-		RUNTIME=`taskset -c 5 hpcrun -e $CLOCK -o $OUT $TARGET ${@:2} > /dev/null 2> /tmp/Runtime`
+		taskset -c 5 hpcrun -e $CLOCK -o $OUT $TARGET ${@:2} > /dev/null 2> /tmp/Runtime
 		RUNTIME=$(</tmp/Runtime)
 		profile=`find $OUT/ -name "*.log"`
 	
@@ -41,3 +42,12 @@ done
 
 cat $LOG.samples >> $LOG
 
+echo "reference" >> $LOG
+for i in {1..$ITERATIONS}; do 
+
+	taskset -c 5 $TARGET ${@:2} > /dev/null 2> /tmp/Runtime
+	RUNTIME=$(</tmp/Runtime)
+
+	echo -e "$RUNTIME \c" >> $LOG
+	echo -e "$i \c"
+done

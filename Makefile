@@ -36,7 +36,7 @@ libmeasure:
 	gcc $(MEASURE_FLAGS) libmeasure-raw.so  target.c -o measure-raw.exe
 	gcc $(MEASURE_FLAGS) libmeasure-none.so target.c -o measure-none.exe
 	
-	scorep gcc  $(MEASURE_FLAGS) target.c -o measure-scorep.exe
+	scorep  gcc  $(MEASURE_FLAGS) target.c -o measure-scorep.exe
 
 target:
 	gcc -DMETA_MEASURE target.c -o target.exe
